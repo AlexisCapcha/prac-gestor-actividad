@@ -36,17 +36,11 @@ public class PrincipalController {
 
     @GetMapping("/hola")
     public String hola() {
-        return "Hola, No seguro.";
-    }
-
-    @GetMapping("/hola-seguro")
-    public String holaSeguro(@RequestParam String nombre) {
-        return "Hola, Has accedido a una ruta segura.";
+        return "Hola.";
     }
 
     @PostMapping("/Registrar")
     public ResponseEntity<?> RegisterRequest(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
-
         Set<Rol> roles = registerRequestDTO.getRoles().stream()
                 .map(roleStr -> rolRepository.findByName(roleStr)
                         .orElseGet(() -> rolRepository.save(Rol.builder().name(roleStr).build()))
@@ -60,16 +54,21 @@ public class PrincipalController {
                 .roles(roles)
                 .build();
         usuarioRepository.save(nuevoUsuario);
-
-        return ResponseEntity.ok(nuevoUsuario);
-        
+        return ResponseEntity.ok(nuevoUsuario); 
     }
 
     @DeleteMapping("/EliminarUsuario")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public String EliminarUsuario(@RequestParam String id) {
         usuarioRepository.deleteById(Long.parseLong(id));;
         return "Usuario eliminado id: ".concat(id);
+    }
+
+    @DeleteMapping("/EliminarRol")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String EliminarRol(@RequestParam String id) {
+        rolRepository.deleteById(Long.parseLong(id));
+        return "Rol eliminado id: ".concat(id);
     }
 
 }

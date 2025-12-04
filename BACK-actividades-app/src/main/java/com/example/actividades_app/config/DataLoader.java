@@ -17,11 +17,11 @@ public class DataLoader implements CommandLineRunner{
     public void run(String... args) throws Exception {
         if (rolRepository.count() == 0) {
             Rol admin = new Rol();
-            admin.setName("ROLE_ADMIN");
+            admin.setName("ADMIN");
             rolRepository.save(admin);
 
             Rol user = new Rol();
-            user.setName("ROLE_USER");
+            user.setName("USER");
             rolRepository.save(user);
             
         }
