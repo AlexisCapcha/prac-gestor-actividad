@@ -4,21 +4,36 @@ import com.example.actividades_app.model.Rol;
 import com.example.actividades_app.service.RolService;
 import com.example.actividades_app.repository.RolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.example.actividades_app.dto.RegistrarRolRequestDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import com.example.actividades_app.config.exception.RoleNotFoundException;
+import com.example.actividades_app.config.exception.RoleAlreadyExistsException;
+
+
 import java.util.List;
 
+@Service
 public class RolServiceImpl implements RolService {
 
     @Autowired
     private RolRepository rolRepository;
 
     @Override
-    public Rol registrar(Rol rol) {
-        //RN evitar duplicados roles
-        if (rolRepository.existsByName(rol.getName())) {
-            throw new RuntimeException("El rol ya existe");
+    public Rol registrarRol(RegistrarRolRequestDTO dto) {
+
+        // Regla: evitar duplicados
+        if (rolRepository.existsByName(dto.getName())) {
+            throw new RoleAlreadyExistsException("El rol ya existe");
         }
+
+        // Crear entidad
+        Rol rol = new Rol();
+        rol.setName(dto.getName());
+
+        // Guardar
         return rolRepository.save(rol);
     }
 
@@ -31,5 +46,13 @@ public class RolServiceImpl implements RolService {
     public List<Rol> obtenerTodosLosRoles() {
         return rolRepository.findAll();
     }
- 
+
+    @Override
+    public void eliminarRol(Long id) {
+        Rol rol = rolRepository.findById(id)
+                .orElseThrow(() -> new RoleNotFoundException("El rol con ID" + id + " no existe"));
+
+        rolRepository.delete(rol);
+    }
+
 }

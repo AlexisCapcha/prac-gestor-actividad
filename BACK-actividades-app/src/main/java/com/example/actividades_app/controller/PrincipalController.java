@@ -34,11 +34,6 @@ public class PrincipalController {
     @Autowired
     private RolRepository rolRepository;
 
-    @GetMapping("/hola")
-    public String hola() {
-        return "Hola.";
-    }
-
     @PostMapping("/Registrar")
     public ResponseEntity<?> RegisterRequest(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
         Set<Rol> roles = registerRequestDTO.getRoles().stream()
@@ -64,11 +59,16 @@ public class PrincipalController {
         return "Usuario eliminado id: ".concat(id);
     }
 
-    @DeleteMapping("/EliminarRol")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String EliminarRol(@RequestParam String id) {
-        rolRepository.deleteById(Long.parseLong(id));
-        return "Rol eliminado id: ".concat(id);
+    @GetMapping("/accessadmin")
+    @PreAuthorize("hasRole('ADMIN')")   
+    public String accessAdmin() {
+        return "Bienvenido, tienes acceso de administrador.";
+    }
+
+    @GetMapping("/accessuser")
+    @PreAuthorize("hasRole('USER')")    
+    public String accessUser() {
+        return "Bienvenido, tienes acceso de Usuario.";
     }
 
 }

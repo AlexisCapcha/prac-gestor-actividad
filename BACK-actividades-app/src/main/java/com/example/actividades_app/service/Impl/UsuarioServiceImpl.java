@@ -4,10 +4,13 @@ import com.example.actividades_app.model.Usuario;
 import com.example.actividades_app.service.UsuarioService;
 import com.example.actividades_app.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.List;
 
+
+@Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
