@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.example.actividades_app.dto.RegisterRequestDTO;
 import com.example.actividades_app.repository.UsuarioRepository;
 import com.example.actividades_app.model.Usuario;
@@ -23,6 +25,7 @@ import com.example.actividades_app.model.Rol;
 import com.example.actividades_app.repository.RolRepository;
 
 @RestController
+@RequestMapping("/api/auth")
 public class PrincipalController {
 
     @Autowired
@@ -55,7 +58,7 @@ public class PrincipalController {
     @DeleteMapping("/EliminarUsuario")
     @PreAuthorize("hasRole('ADMIN')")
     public String EliminarUsuario(@RequestParam String id) {
-        usuarioRepository.deleteById(Long.parseLong(id));;
+        usuarioRepository.deleteById(Long.parseLong(id));
         return "Usuario eliminado id: ".concat(id);
     }
 
