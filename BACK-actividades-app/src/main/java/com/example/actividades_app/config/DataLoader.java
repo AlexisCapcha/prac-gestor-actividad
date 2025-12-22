@@ -2,28 +2,27 @@ package com.example.actividades_app.config;
 
 import com.example.actividades_app.model.Rol;
 import com.example.actividades_app.repository.RolRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DataLoader implements CommandLineRunner{
-    private final RolRepository rolRepository;
+public class DataLoader implements CommandLineRunner {
 
-    public DataLoader(RolRepository rolRepository) {
-        this.rolRepository = rolRepository;
-    }
+    @Autowired
+    private RolRepository rolRepository;
 
     @Override
-    public void run(String... args) throws Exception {
-        if (rolRepository.count() == 0) {
-            Rol admin = new Rol();
-            admin.setName("ADMIN");
-            rolRepository.save(admin);
+    public void run(String... args) {
 
-            Rol user = new Rol();
-            user.setName("USER");
-            rolRepository.save(user);
-            
+        if (!rolRepository.existsByName("USER")) {
+            rolRepository.save(new Rol(null, "USER"));
+        }
+
+        if (!rolRepository.existsByName("ADMIN")) {
+            rolRepository.save(new Rol(null, "ADMIN"));
         }
     }
 }
+

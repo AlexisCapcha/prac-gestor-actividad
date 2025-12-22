@@ -2,8 +2,8 @@ package com.example.actividades_app.security.filters;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -12,38 +12,48 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.example.actividades_app.config.JwtUtils;
-import com.example.actividades_app.service.UserDetailsServiceImpl;
 
 @Component
 public class JwtAutorizationFilter extends OncePerRequestFilter {
-    
+
     @Autowired
-    private JwtUtils jwtUtils; 
-    
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private JwtUtils jwtUtils;
+
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain)
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
             throws ServletException, IOException {
-        // Lógica para autorizar solicitudes basadas en JWT
 
-        String tokenHeader = request.getHeader("Authorization");
-        
-        if (tokenHeader != null && tokenHeader.startsWith("Bearer ")) {
-            String token = tokenHeader.substring(7);
-            if(jwtUtils.isTokenValid(token)){
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+            String token = authHeader.substring(7);
+
+            if (jwtUtils.isTokenValid(token)) {
+
                 String username = jwtUtils.getUsernameFromToken(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+                List<String> roles = jwtUtils.getRolesFromToken(token);
 
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                var authorities = roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
         filterChain.doFilter(request, response);
     }
-
 }

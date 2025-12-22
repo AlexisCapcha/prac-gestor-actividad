@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.actividades_app.dto.RegistrarRolRequestDTO;
 
 @RestController
-@RequestMapping("/api/Rol")
+@RequestMapping("/z")
 public class RolesController {
 
     @Autowired

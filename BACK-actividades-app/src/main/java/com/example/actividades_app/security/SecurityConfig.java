@@ -34,22 +34,25 @@ public class SecurityConfig {
     UserDetailsServiceImpl userDetailsService;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
+    SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            AuthenticationManager authenticationManager) throws Exception {
+
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
-        
-        return httpSecurity
-                .csrf(config -> config.disable())
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/auth/Registrar").permitAll();
-                    auth.anyRequest().authenticated();
-                })
-                .sessionManagement(session -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
-                .addFilter(jwtAuthenticationFilter)
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
+
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(autorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilter(jwtAuthenticationFilter)
                 .build();
     }
 
