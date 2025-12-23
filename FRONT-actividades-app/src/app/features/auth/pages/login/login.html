@@ -1,1 +1,33 @@
 <p>login works!</p>
+
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+
+    <h2>Iniciar Sesión</h2>
+
+    <div>
+        <label>Usuario</label>
+        <input type="text" formControlName="username">
+
+        <small *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
+            El usuario es obligatorio
+        </small>
+    </div>
+
+    <div>
+        <label>Contraseña</label>
+        <input type="password" formControlName="password">
+
+        <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+            La contraseña es obligatoria
+        </small>
+    </div>
+
+    <button type="submit" [disabled]="loading">
+        {{ loading ? 'Ingresando...' : 'Login' }}
+    </button>
+
+    <p *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+    </p>
+
+</form>

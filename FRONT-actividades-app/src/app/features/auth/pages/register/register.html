@@ -1,1 +1,41 @@
 <p>register works!</p>
+
+<form [formGroup]="registerForm" (ngSubmit)="register()">
+
+  <h2>Registro</h2>
+
+  <div>
+    <label>Email</label>
+    <input type="email" formControlName="email">
+
+    <small *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+      Email inválido
+    </small>
+  </div>
+
+  <div>
+    <label>Usuario</label>
+    <input type="text" formControlName="username">
+
+    <small *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid">
+      El usuario es obligatorio
+    </small>
+  </div>
+
+  <div>
+    <label>Contraseña</label>
+    <input type="password" formControlName="password">
+
+    <small *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+      Mínimo 3 caracteres
+    </small>
+  </div>
+
+  <button type="submit" [disabled]="loading">
+    {{ loading ? 'Registrando...' : 'Registrarse' }}
+  </button>
+
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+</form>
