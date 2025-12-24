@@ -1,0 +1,12 @@
+<header>
+    <nav class="navbar">
+        <div class="left">
+            <strong>Panel USER</strong>
+        </div>
+        <div class="right">
+            <span class="user">{{ username }}</span>
+            <span class="role">{{ roles.join(', ') }}</span>
+            <button class="logout" (click)="logout()">Salir</button>
+        </div>
+    </nav>
+</header>

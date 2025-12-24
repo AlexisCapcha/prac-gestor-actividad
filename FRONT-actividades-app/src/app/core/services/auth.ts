@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Token } from './token';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ export class Auth {
 
   constructor(
     private http: HttpClient,
-    private tokenService: Token
+    private tokenService: Token,
+    private router: Router
   ){}
 
   login(data: {username: string; password: string}): Observable<any> {
@@ -24,6 +26,7 @@ export class Auth {
 
   logout(): void{
     this.tokenService.removeToken();
+    this.router.navigate(['/login']);
   }
 
 }

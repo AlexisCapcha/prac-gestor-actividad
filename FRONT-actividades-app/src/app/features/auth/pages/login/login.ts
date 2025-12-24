@@ -47,6 +47,7 @@ export class Login {
       next: res =>{
         this.TokenService.saveToken(res.token);
         this.TokenService.saveRoles(res.Roles);
+        this.TokenService.saveUser(res.Username);
         this.loading = false;
 
         if (res.Roles.includes('ADMIN')) {
