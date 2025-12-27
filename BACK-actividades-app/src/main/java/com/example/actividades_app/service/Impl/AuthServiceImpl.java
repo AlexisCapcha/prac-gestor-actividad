@@ -35,7 +35,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void register(RegisterRequestDTO request) {
         if(usuarioRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("USER_ALREADY_EXISTS");
+            throw new RuntimeException("USERNAME_ALREADY_EXISTS");
+        }
+        if (usuarioRepository.existsByEmail(request.getEmail())){
+            throw new RuntimeException("EMAIL_ALREADY_EXISTS");
         }
 
         // Roles deben existir previamente en la base de datos

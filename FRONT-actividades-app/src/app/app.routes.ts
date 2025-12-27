@@ -1,14 +1,17 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
 import { RoleGuard } from './core/guards/role-guard';
+import { NoAuthGuard } from './core/guards/no-auth-guard';
 
 export const routes: Routes = [
     {
         path: 'login',
+        canActivate: [NoAuthGuard],
         loadComponent: () => import('./features/auth/pages/login/login').then(m => m.Login)
     },
     {
         path: 'register',
+        canActivate: [NoAuthGuard],
         loadComponent: () => import('./features/auth/pages/register/register').then(m => m.Register)
     },
 

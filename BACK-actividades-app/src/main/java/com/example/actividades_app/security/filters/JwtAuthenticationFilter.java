@@ -64,7 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         List<String> roles = user.getAuthorities()
                 .stream()
-                .map(authority -> authority.getAuthority().replace("ROLE_",""))
+                .map(authority -> authority.getAuthority().replace("ROLE_", ""))
                 .toList();
 
         String token = jwtUtils.generateAccessToken(user.getUsername(), roles);
@@ -83,5 +83,25 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().flush();
         super.successfulAuthentication(request, response, chain, authResult);
     }
+
+    //Credenciales incorrectas
+    @Override
+    protected void unsuccessfulAuthentication(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException failed)
+            throws IOException {
+
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "INVALID_CREDENTIALS");
+        body.put("message", "Usuario o contraseña incorrectos");
+
+        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.getWriter().flush();
+    }
+    
 
 }
